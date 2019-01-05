@@ -1,5 +1,5 @@
-# ffmpeg
-Fork from
+# A shell script for build FFmpeg
+
 ### EDIT configure
 ```
 SLIBNAME_WITH_MAJOR='$(SLIBPREF)$(FULLNAME)-$(LIBMAJOR)$(SLIBSUF)'
