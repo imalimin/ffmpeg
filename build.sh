@@ -49,7 +49,9 @@ build(){
   	--target-os=android \
   	--sysroot=$PLATFORM \
   	--enable-cross-compile \
-  	--cross-prefix=$TOOLCHAIN \
+    --cross-prefix=$TOOLCHAIN \
+    --cc=${TOOLCHAIN}gcc \
+    --nm=${TOOLCHAIN}nm \
   	--disable-debug \
   	\
   	--enable-shared \
@@ -60,7 +62,6 @@ build(){
   	--enable-nonfree \
   	--disable-w32threads \
   	--disable-programs \
-    --disable-ffserver \
   	--disable-ffplay \
   	--disable-ffprobe \
   	--disable-avdevice \
