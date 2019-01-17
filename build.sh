@@ -67,7 +67,6 @@ build(){
   	--disable-avdevice \
   	\
   	--disable-avdevice \
-  	--disable-swresample \
   	--disable-swscale \
   	--disable-postproc \
   	--disable-avfilter \
