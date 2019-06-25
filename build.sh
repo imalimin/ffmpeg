@@ -13,7 +13,9 @@ build(){
   EXTRA_FF_FLAGS=
   EXTRA_CFLAGS=
   EXTRA_LDFLAGS=
-  PREFIX=$(pwd)/product/$ARCH
+  PREFIX=
+  LIB_X264_STATIC=
+  LIB_GCC=
 
   OS=linux-x86_64
   if [ ` uname -s ` = "Darwin" ]; then
@@ -22,7 +24,8 @@ build(){
 
   if [ "$ARCH" = "armv7a" ]; then
     echo "------BUILD armv7a--------"
-    PLATFORM=$NDK/platforms/android-19/arch-arm/
+    PREFIX=$(pwd)/product/armeabi-v7a
+    PLATFORM=$NDK/platforms/android-19/arch-arm
     TOOLCHAIN=$NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/${OS}/bin/arm-linux-androideabi-
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --arch=arm --cpu=cortex-a8"
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-neon"
@@ -31,15 +34,22 @@ build(){
   	EXTRA_CFLAGS="$EXTRA_CFLAGS -I${X264}/armv7a/include"
   	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Os -Wl,--fix-cortex-a8"
   	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -L${X264}/armv7a/lib"
+
+    LIB_X264_STATIC=$X264/armv7a/lib/libx264.a
+    LIB_GCC=$NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/${OS}/lib/gcc/arm-linux-androideabi/4.9.x/libgcc.a
   elif [ "$ARCH" = "x86" ]; then
     echo "------BUILD x86--------"
-    PLATFORM=$NDK/platforms/android-19/arch-x86/
+    PREFIX=$(pwd)/product/x86
+    PLATFORM=$NDK/platforms/android-19/arch-x86
     TOOLCHAIN=$NDK/toolchains/x86-4.9/prebuilt/${OS}/bin/i686-linux-android-
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --arch=x86 --cpu=i686"
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-yasm"
   	EXTRA_CFLAGS="$EXTRA_CFLAGS -Os -march=atom -msse3 -ffast-math -mfpmath=sse"
   	EXTRA_CFLAGS="$EXTRA_CFLAGS -I${X264}/x86/include"
   	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -L${X264}/x86/lib"
+
+    LIB_X264_STATIC=$X264/x86/lib/libx264.a
+    LIB_GCC=$NDK/toolchains/x86-4.9/prebuilt/${OS}/lib/gcc/i686-linux-android/4.9.x/libgcc.a
   else
     echo "Need a arch param"
     exit 1
@@ -54,8 +64,8 @@ build(){
     --nm=${TOOLCHAIN}nm \
   	--disable-debug \
   	\
-  	--enable-shared \
-  	--disable-static \
+  	--disable-shared \
+  	--enable-static \
   	\
   	--disable-doc \
   	--enable-gpl \
@@ -93,9 +103,27 @@ build(){
   	--extra-ldflags="$EXTRA_LDFLAGS" \
   	$EXTRA_FF_FLAGS
 
-    make clean
-    make -j4
-    make install
+  make clean
+  make -j4
+  make install
+
+  ${TOOLCHAIN}ld \
+    --sysroot=$PLATFORM \
+    --allow-shlib-undefined \
+    -rpath-link=$PLATFORM/usr/lib \
+    -L$PLATFORM/usr/lib \
+    -L$PREFIX/lib \
+    -soname libhwffmpeg.so -shared -nostdlib -Bsymbolic --whole-archive -o \
+    $PREFIX/libhwffmpeg.so \
+    $PREFIX/lib/libavcodec.a \
+    $PREFIX/lib/libavformat.a \
+    $PREFIX/lib/libavresample.a \
+    $PREFIX/lib/libavutil.a \
+    $PREFIX/lib/libswresample.a \
+    $LIB_X264_STATIC \
+    -lc -lm -lz -ldl -llog \
+    $LIB_GCC
+    #--no-undefined \
 }
 
 build $1
