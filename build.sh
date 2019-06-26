@@ -1,6 +1,6 @@
 #!/bin/bash
 NDK=/Users/lmy/Library/Android/android-ndk-r14b
-X264=/Users/lmy/Projects/x264/product
+X264=$(pwd)/../x264/product
 
 #--enable-jni
 #--enable-mediacodec
@@ -31,11 +31,11 @@ build(){
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-neon"
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-thumb  --enable-asm"
   	EXTRA_CFLAGS="$EXTRA_CFLAGS -march=armv7-a -mcpu=cortex-a8 -mfpu=vfpv3-d16 -mfloat-abi=softfp -mthumb"
-  	EXTRA_CFLAGS="$EXTRA_CFLAGS -I${X264}/armv7a/include"
+  	EXTRA_CFLAGS="$EXTRA_CFLAGS -I${X264}/armeabi-v7a/include"
   	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Os -Wl,--fix-cortex-a8"
-  	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -L${X264}/armv7a/lib"
+  	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -L${X264}/armeabi-v7a/lib"
 
-    LIB_X264_STATIC=$X264/armv7a/lib/libx264.a
+    LIB_X264_STATIC=$X264/armeabi-v7a/lib/libx264.a
     LIB_GCC=$NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/${OS}/lib/gcc/arm-linux-androideabi/4.9.x/libgcc.a
   elif [ "$ARCH" = "x86" ]; then
     echo "------BUILD x86--------"
