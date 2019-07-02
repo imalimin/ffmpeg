@@ -30,9 +30,9 @@ build(){
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --arch=arm --cpu=cortex-a8"
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-neon"
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-thumb  --enable-asm"
-  	EXTRA_CFLAGS="$EXTRA_CFLAGS -march=armv7-a -mcpu=cortex-a8 -mfpu=vfpv3-d16 -mfloat-abi=softfp -mthumb"
+  	EXTRA_CFLAGS="$EXTRA_CFLAGS -march=armv7-a -mcpu=cortex-a8 -mfpu=vfpv3-d16 -mfloat-abi=softfp -mthumb -O3"
   	EXTRA_CFLAGS="$EXTRA_CFLAGS -I${X264}/armeabi-v7a/include"
-  	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Os -Wl,--fix-cortex-a8"
+  	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Wl,--fix-cortex-a8 -pie -fPIC"
   	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -L${X264}/armeabi-v7a/lib"
 
     LIB_X264_STATIC=$X264/armeabi-v7a/lib/libx264.a
@@ -44,8 +44,9 @@ build(){
     TOOLCHAIN=$NDK/toolchains/x86-4.9/prebuilt/${OS}/bin/i686-linux-android-
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --arch=x86 --cpu=i686"
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-yasm"
-  	EXTRA_CFLAGS="$EXTRA_CFLAGS -Os -march=atom -msse3 -ffast-math -mfpmath=sse"
+  	EXTRA_CFLAGS="$EXTRA_CFLAGS -march=atom -msse3 -ffast-math -mfpmath=sse -O3"
   	EXTRA_CFLAGS="$EXTRA_CFLAGS -I${X264}/x86/include"
+    EXTRA_LDFLAGS="$EXTRA_LDFLAGS -pie -fPIC"
   	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -L${X264}/x86/lib"
 
     LIB_X264_STATIC=$X264/x86/lib/libx264.a
@@ -113,8 +114,8 @@ build(){
     -rpath-link=$PLATFORM/usr/lib \
     -L$PLATFORM/usr/lib \
     -L$PREFIX/lib \
-    -soname libhwffmpeg.so -shared -nostdlib -Bsymbolic --whole-archive -o \
-    $PREFIX/libhwffmpeg.so \
+    -soname libhwffmpeg.so -shared -nostdlib -Bsymbolic --whole-archive -O3 \
+    -o $PREFIX/libhwffmpeg.so \
     $PREFIX/lib/libavcodec.a \
     $PREFIX/lib/libavformat.a \
     $PREFIX/lib/libavresample.a \
