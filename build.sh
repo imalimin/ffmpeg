@@ -30,7 +30,7 @@ build(){
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --arch=arm --cpu=cortex-a8"
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-neon"
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-thumb  --enable-asm"
-  	EXTRA_CFLAGS="$EXTRA_CFLAGS -march=armv7-a -mcpu=cortex-a8 -mfpu=vfpv3-d16 -mfloat-abi=softfp -mthumb -O3"
+  	EXTRA_CFLAGS="$EXTRA_CFLAGS -O3 -march=armv7-a -mcpu=cortex-a8 -mfpu=vfpv3-d16 -mfloat-abi=softfp -mthumb"
   	EXTRA_CFLAGS="$EXTRA_CFLAGS -I${X264}/armeabi-v7a/include"
   	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Wl,--fix-cortex-a8 -pie -fPIC"
   	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -L${X264}/armeabi-v7a/lib"
@@ -44,9 +44,9 @@ build(){
     TOOLCHAIN=$NDK/toolchains/x86-4.9/prebuilt/${OS}/bin/i686-linux-android-
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --arch=x86 --cpu=i686"
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-yasm"
-  	EXTRA_CFLAGS="$EXTRA_CFLAGS -march=atom -msse3 -ffast-math -mfpmath=sse -O3"
+  	EXTRA_CFLAGS="$EXTRA_CFLAGS -O3 -Wall -fpic -pipe -DANDROID -DNDEBUG -march=atom -msse3 -ffast-math -mfpmath=sse"
   	EXTRA_CFLAGS="$EXTRA_CFLAGS -I${X264}/x86/include"
-    EXTRA_LDFLAGS="$EXTRA_LDFLAGS -pie -fPIC"
+    EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lm -lz -Wl,--no-undefined -Wl,-z,noexecstack"
   	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -L${X264}/x86/lib"
 
     LIB_X264_STATIC=$X264/x86/lib/libx264.a
@@ -94,11 +94,23 @@ build(){
     \
   	--enable-libx264 \
   	--enable-encoder=libx264 \
-  	--enable-encoder=aac \
+    --enable-encoder=aac \
+    --enable-encoder=pcm_s8 \
+    --enable-encoder=pcm_s16le \
+    --enable-encoder=pcm_s16be \
+    --enable-encoder=pcm_s32le \
+    --enable-encoder=pcm_s32be \
+    --enable-encoder=pcm_flt \
   	\
     --enable-decoder=h264_mediacodec \
   	--enable-decoder=h264 \
-  	--enable-decoder=aac \
+    --enable-decoder=aac \
+    --enable-decoder=pcm_s8 \
+    --enable-decoder=pcm_s16le \
+    --enable-decoder=pcm_s16be \
+    --enable-decoder=pcm_s32le \
+    --enable-decoder=pcm_s32be \
+    --enable-decoder=pcm_flt \
   	\
   	--extra-cflags="$EXTRA_CFLAGS" \
   	--extra-ldflags="$EXTRA_LDFLAGS" \
@@ -114,7 +126,7 @@ build(){
     -rpath-link=$PLATFORM/usr/lib \
     -L$PLATFORM/usr/lib \
     -L$PREFIX/lib \
-    -soname libhwffmpeg.so -shared -nostdlib -Bsymbolic --whole-archive -O3 \
+    -soname libhwffmpeg.so -shared -nostdlib -Bsymbolic --whole-archive -O3 --no-disable-pie-when-unsafe-data-size \
     -o $PREFIX/libhwffmpeg.so \
     $PREFIX/lib/libavcodec.a \
     $PREFIX/lib/libavformat.a \
@@ -125,6 +137,7 @@ build(){
     -lc -lm -lz -ldl -llog \
     $LIB_GCC
     #--no-undefined \
+
 }
 
 build $1
