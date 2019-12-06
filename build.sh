@@ -1,21 +1,17 @@
 #!/bin/bash
 NDK=/Users/lmy/Library/Android/android-ndk-r14b
-X264=$(pwd)/../x264/product
+ANDROID_VER=21
+TOOLCHAIN_VER=4.9
+export TEMDIR=$(pwd)/.tmp
 
-#--enable-jni
-#--enable-mediacodec
-#--enable-decoder=h264_mediacodec
-#--enable-hwaccel=h264_mediacodec
 build(){
   ARCH=$1
   PLATFORM=
   TOOLCHAIN=
-  EXTRA_FF_FLAGS=
+  HOST=
   EXTRA_CFLAGS=
-  EXTRA_LDFLAGS=
+  EXTRA_X264_FLAGS=
   PREFIX=
-  LIB_X264_STATIC=
-  LIB_GCC=
 
   OS=linux-x86_64
   if [ ` uname -s ` = "Darwin" ]; then
@@ -25,119 +21,52 @@ build(){
   if [ "$ARCH" = "armv7a" ]; then
     echo "------BUILD armv7a--------"
     PREFIX=$(pwd)/product/armeabi-v7a
-    PLATFORM=$NDK/platforms/android-19/arch-arm
+    PLATFORM=$NDK/platforms/android-19/arch-arm/
     TOOLCHAIN=$NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/${OS}/bin/arm-linux-androideabi-
-  	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --arch=arm --cpu=cortex-a8"
-  	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-neon"
-  	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-thumb  --enable-asm"
-  	EXTRA_CFLAGS="$EXTRA_CFLAGS -O3 -march=armv7-a -mcpu=cortex-a8 -mfpu=vfpv3-d16 -mfloat-abi=softfp -mthumb"
-  	EXTRA_CFLAGS="$EXTRA_CFLAGS -I${X264}/armeabi-v7a/include"
-  	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Wl,--fix-cortex-a8 -pie -fPIC"
-  	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -L${X264}/armeabi-v7a/lib"
-
-    LIB_X264_STATIC=$X264/armeabi-v7a/lib/libx264.a
-    LIB_GCC=$NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/${OS}/lib/gcc/arm-linux-androideabi/4.9.x/libgcc.a
+    HOST=arm-linux
+    EXTRA_CFLAGS="${EXTRA_FLAGS} -fPIC -marm -DX264_VERSION -DANDROID -DHAVE_PTHREAD -DNDEBUG -static -D__ARM_ARCH_7__ -D__ARM_ARCH_7A__"
+    EXTRA_CFLAGS="${EXTRA_FLAGS} -Os -march=armv7-a -mfpu=neon -mtune=generic-armv7-a"
+    EXTRA_FLAGS="${EXTRA_FLAGS} -mfloat-abi=softfp -ftree-vectorize -mvectorize-with-neon-quad -ffast-math"
+    EXTRA_X264_FLAGS="${EXTRA_X264_FLAGS} --disable-lavf"
+    EXTRA_X264_FLAGS="${EXTRA_X264_FLAGS} --disable-gpac --enable-strip "
+  elif [ "$ARCH" = "arm64" ]; then
+    echo "------BUILD arm64--------"
+    PREFIX=$(pwd)/product/arm64-v8a
+    PLATFORM=$NDK/platforms/android-${ANDROID_VER}/arch-arm64/
+    TOOLCHAIN=$NDK/toolchains/aarch64-linux-android-${TOOLCHAIN_VER}/prebuilt/${OS}/bin/aarch64-linux-android-
+    HOST=arm-linux
+    EXTRA_CFLAGS="${EXTRA_FLAGS} -fPIC -marm -DX264_VERSION -DANDROID -DHAVE_PTHREAD -DNDEBUG -static"
+    EXTRA_CFLAGS="${EXTRA_FLAGS} -Os -mfpu=neon"
+    EXTRA_FLAGS="${EXTRA_FLAGS} -mfloat-abi=softfp -ftree-vectorize -mvectorize-with-neon-quad -ffast-math"
+    EXTRA_X264_FLAGS="${EXTRA_X264_FLAGS} --disable-lavf"
+    EXTRA_X264_FLAGS="${EXTRA_X264_FLAGS} --disable-gpac --enable-strip --disable-asm"
   elif [ "$ARCH" = "x86" ]; then
     echo "------BUILD x86--------"
     PREFIX=$(pwd)/product/x86
-    PLATFORM=$NDK/platforms/android-19/arch-x86
+    PLATFORM=$NDK/platforms/android-19/arch-x86/
     TOOLCHAIN=$NDK/toolchains/x86-4.9/prebuilt/${OS}/bin/i686-linux-android-
-  	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --arch=x86 --cpu=i686"
-  	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-yasm"
-  	EXTRA_CFLAGS="$EXTRA_CFLAGS -O3 -Wall -fpic -pipe -DANDROID -DNDEBUG -march=atom -msse3 -ffast-math -mfpmath=sse"
-  	EXTRA_CFLAGS="$EXTRA_CFLAGS -I${X264}/x86/include"
-    EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lm -lz -Wl,--no-undefined -Wl,-z,noexecstack"
-  	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -L${X264}/x86/lib"
-
-    LIB_X264_STATIC=$X264/x86/lib/libx264.a
-    LIB_GCC=$NDK/toolchains/x86-4.9/prebuilt/${OS}/lib/gcc/i686-linux-android/4.9.x/libgcc.a
+    HOST=i686-linux
+    EXTRA_CFLAGS="${EXTRA_FLAGS} -fPIC -DX264_VERSION -DANDROID -DHAVE_PTHREAD -DNDEBUG"
+    EXTRA_CFLAGS="${EXTRA_FLAGS} -static -Os -march=atom -mtune=atom -mssse3 -ffast-math -ftree-vectorize -mfpmath=sse"
+    EXTRA_X264_FLAGS="${EXTRA_X264_FLAGS} --disable-asm"
   else
     echo "Need a arch param"
     exit 1
   fi
+
   ./configure \
-  	--prefix=$PREFIX \
-  	--target-os=android \
-  	--sysroot=$PLATFORM \
-  	--enable-cross-compile \
-    --cross-prefix=$TOOLCHAIN \
-    --cc=${TOOLCHAIN}gcc \
-    --nm=${TOOLCHAIN}nm \
-  	--disable-debug \
-  	\
-  	--disable-shared \
-  	--enable-static \
-  	\
-  	--disable-doc \
-  	--enable-gpl \
-  	--enable-nonfree \
-  	--disable-w32threads \
-  	--disable-programs \
-  	--disable-ffplay \
-  	--disable-ffprobe \
-  	--disable-avdevice \
-  	\
-  	--disable-avdevice \
-  	--disable-swscale \
-  	--disable-postproc \
-  	--disable-avfilter \
-  	--enable-avresample \
-  	--disable-network \
-  	--disable-filters \
-  	\
-  	--disable-encoders \
-  	--disable-decoders \
-  	\
-    --enable-jni \
-    --enable-mediacodec \
-    --enable-hwaccel=h264_mediacodec \
-    \
-  	--enable-libx264 \
-  	--enable-encoder=libx264 \
-    --enable-encoder=aac \
-    --enable-encoder=pcm_s8 \
-    --enable-encoder=pcm_s16le \
-    --enable-encoder=pcm_s16be \
-    --enable-encoder=pcm_s32le \
-    --enable-encoder=pcm_s32be \
-    --enable-encoder=pcm_flt \
-  	\
-    --enable-decoder=h264_mediacodec \
-  	--enable-decoder=h264 \
-    --enable-decoder=aac \
-    --enable-decoder=pcm_s8 \
-    --enable-decoder=pcm_s16le \
-    --enable-decoder=pcm_s16be \
-    --enable-decoder=pcm_s32le \
-    --enable-decoder=pcm_s32be \
-    --enable-decoder=pcm_flt \
-  	\
-  	--extra-cflags="$EXTRA_CFLAGS" \
-  	--extra-ldflags="$EXTRA_LDFLAGS" \
-  	$EXTRA_FF_FLAGS
+  --prefix=$PREFIX \
+  --enable-pic \
+  --enable-static \
+  --host=$HOST \
+  --cross-prefix=$TOOLCHAIN \
+  --sysroot=$PLATFORM \
+  --extra-cflags=${EXTRA_CFLAGS} \
+  $EXTRA_X264_FLAGS
 
   make clean
   make -j4
   make install
-
-  ${TOOLCHAIN}ld \
-    --sysroot=$PLATFORM \
-    --allow-shlib-undefined \
-    -rpath-link=$PLATFORM/usr/lib \
-    -L$PLATFORM/usr/lib \
-    -L$PREFIX/lib \
-    -soname libhwffmpeg.so -shared -nostdlib -Bsymbolic --whole-archive -O3 --no-disable-pie-when-unsafe-data-size \
-    -o $PREFIX/libhwffmpeg.so \
-    $PREFIX/lib/libavcodec.a \
-    $PREFIX/lib/libavformat.a \
-    $PREFIX/lib/libavresample.a \
-    $PREFIX/lib/libavutil.a \
-    $PREFIX/lib/libswresample.a \
-    $LIB_X264_STATIC \
-    -lc -lm -lz -ldl -llog \
-    $LIB_GCC
-    #--no-undefined \
-
 }
 
 build $1
