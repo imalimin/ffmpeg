@@ -104,18 +104,16 @@ build(){
     --enable-nonfree \
     --disable-w32threads \
     --disable-programs \
+    --disable-debug \
+    \
     --disable-ffplay \
     --disable-ffprobe \
     --disable-avdevice \
-    --disable-debug \
-    \
-    --disable-avdevice \
-    --disable-swscale \
+    --enable-swscale \
     --disable-postproc \
-    --disable-avfilter \
+    --enable-avfilter \
     --enable-avresample \
     --disable-network \
-    --disable-filters \
     \
     --disable-encoders \
     --disable-decoders \
@@ -133,6 +131,7 @@ build(){
     --enable-encoder=pcm_s32le \
     --enable-encoder=pcm_s32be \
     --enable-encoder=pcm_flt \
+    --enable-encoder=gif \
     \
     --enable-decoder=h264_mediacodec \
     --enable-decoder=h264 \
@@ -165,6 +164,8 @@ build(){
     $PREFIX/lib/libavresample.a \
     $PREFIX/lib/libavutil.a \
     $PREFIX/lib/libswresample.a \
+    $PREFIX/lib/libavfilter.a \
+    $PREFIX/lib/libswscale.a \
     $LIB_X264_STATIC \
     -lc -lm -lz -ldl -llog \
     $LIB_GCC
