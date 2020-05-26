@@ -1,1 +1,10 @@
-/ffmpeg
+*
+!libjpeg-turbo/build.sh
+!libpng/build.sh
+!libyuv/build.sh
+!x264/build.sh
+!build-ijk.sh
+!build.sh
+!do-detect-env.sh
+!init.sh
+!make_toolchain.sh
