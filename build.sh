@@ -1,7 +1,7 @@
 #!/bin/bash
 NDK=${ANDROID_NDK}
 ANDROID_VER=21
-X264=$(pwd)/../x264/product
+X264=$(pwd)/x264/product
 
 function guess_arch(){
   local arch=$1
@@ -174,4 +174,5 @@ build(){
 }
 
 arch=$1
+cd ffmpeg
 build $arch
