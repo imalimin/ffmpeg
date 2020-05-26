@@ -104,6 +104,8 @@ build(){
     --enable-nonfree \
     --disable-w32threads \
     --disable-programs \
+    --disable-indevs \
+    --disable-outdevs \
     --disable-debug \
     \
     --disable-ffplay \
@@ -111,17 +113,14 @@ build(){
     --disable-avdevice \
     --enable-swscale \
     --disable-postproc \
-    --enable-avfilter \
     --enable-avresample \
     --disable-network \
-    \
-    --disable-encoders \
-    --disable-decoders \
     \
     --enable-jni \
     --enable-mediacodec \
     --enable-hwaccel=h264_mediacodec \
     \
+    --disable-encoders \
     --enable-libx264 \
     --enable-encoder=libx264 \
     --enable-encoder=aac \
@@ -130,9 +129,11 @@ build(){
     --enable-encoder=pcm_s16be \
     --enable-encoder=pcm_s32le \
     --enable-encoder=pcm_s32be \
-    --enable-encoder=pcm_flt \
+    --enable-encoder=pcm_f32be \
+    --enable-encoder=pcm_f32le \
     --enable-encoder=gif \
     \
+    --disable-decoders \
     --enable-decoder=h264_mediacodec \
     --enable-decoder=h264 \
     --enable-decoder=aac \
@@ -141,7 +142,58 @@ build(){
     --enable-decoder=pcm_s16be \
     --enable-decoder=pcm_s32le \
     --enable-decoder=pcm_s32be \
-    --enable-decoder=pcm_flt \
+    --enable-decoder=pcm_f32be \
+    --enable-decoder=pcm_f32le \
+    --enable-decoder=gif \
+    \
+    --enable-protocol=file \
+    \
+    --disable-muxers \
+    --enable-muxer=h264 \
+    --enable-muxer=mp4 \
+    --enable-muxer=mp3 \
+    --enable-muxer=hevc \
+    --enable-muxer=pcm_s8 \
+    --enable-muxer=pcm_s16le \
+    --enable-muxer=pcm_s16be \
+    --enable-muxer=pcm_s32le \
+    --enable-muxer=pcm_s32be \
+    --enable-muxer=pcm_f32be \
+    --enable-muxer=pcm_f32le \
+    --enable-muxer=rawvideo \
+    --enable-muxer=gif \
+    --enable-muxer=f4v \
+    --enable-muxer=m4v \
+    --enable-muxer=flv \
+    \
+    --enable-demuxer=h264 \
+    --enable-demuxer=mp3 \
+    --enable-demuxer=hevc \
+    --enable-demuxer=aac \
+    --enable-demuxer=pcm_s8 \
+    --enable-demuxer=pcm_s16le \
+    --enable-demuxer=pcm_s16be \
+    --enable-demuxer=pcm_s32le \
+    --enable-demuxer=pcm_s32be \
+    --enable-demuxer=pcm_f32be \
+    --enable-demuxer=pcm_f32le \
+    --enable-demuxer=rawvideo \
+    --enable-demuxer=mpegvideo \
+    --enable-demuxer=gif \
+    --enable-demuxer=m4v \
+    --enable-demuxer=flv \
+    \
+    --disable-parsers \
+    --enable-parser=h264 \
+    --enable-parser=mpegaudio \
+    --enable-parser=mpegvideo \
+    --enable-parser=mpeg4video \
+    --enable-parser=hevc \
+    --enable-parser=aac \
+    --enable-parser=aac_latm \
+    --enable-parser=gif \
+    \
+    --enable-filters \
     \
     --extra-cflags="$EXTRA_CFLAGS" \
     --extra-ldflags="$EXTRA_LDFLAGS" \
@@ -171,6 +223,7 @@ build(){
     $LIB_GCC
     #--no-undefined \
 
+  cp config.h ${PREFIX}/include
 }
 
 arch=$1
