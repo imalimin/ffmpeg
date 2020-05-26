@@ -1,5 +1,5 @@
 #!/bin/bash
-NDK=/Users/lmy/Library/Android/android-ndk-r14b
+NDK=${ANDROID_NDK}
 ANDROID_VER=21
 X264=$(pwd)/../x264/product
 
@@ -37,9 +37,9 @@ build(){
     OS=darwin-x86_64
   fi
 
-  ANDROID_TOOLCHAIN=$(../make_toolchain.sh $ANDROID_VER $arch)
+  ANDROID_TOOLCHAIN=$(../make_toolchain.sh $ANDROID_VER $arch $NDK)
   PLATFORM=${ANDROID_TOOLCHAIN}/sysroot
-  echo "ANDROID_TOOLCHAIN: ${ANDROID_TOOLCHAIN}"
+  echo "USE ${ANDROID_TOOLCHAIN}"
   if [ "$ARCH" = "arm" ]; then
     echo "------BUILD armv7a--------"
     PREFIX=$(pwd)/product/armeabi-v7a
@@ -84,7 +84,7 @@ build(){
     #TODO version 4.9.x
     LIB_GCC=${ANDROID_TOOLCHAIN}/lib/gcc/i686-linux-android/4.9.x/libgcc.a
   else
-    echo "Need a arch param"
+    echo "Not support arch for ${1}. Input arm, arm64 or x86 pls."
     exit 1
   fi
   ./configure \
@@ -173,5 +173,5 @@ build(){
 
 }
 
-arch=$(guess_arch $1)
+arch=$1
 build $arch
