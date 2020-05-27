@@ -151,7 +151,9 @@ build(){
     --disable-muxers \
     --enable-muxer=h264 \
     --enable-muxer=mp4 \
+    --enable-muxer=mov \
     --enable-muxer=mp3 \
+    --enable-muxer=wav \
     --enable-muxer=hevc \
     --enable-muxer=pcm_s8 \
     --enable-muxer=pcm_s16le \
@@ -166,8 +168,11 @@ build(){
     --enable-muxer=m4v \
     --enable-muxer=flv \
     \
+    --disable-demuxers \
     --enable-demuxer=h264 \
+    --enable-demuxer=mov \
     --enable-demuxer=mp3 \
+    --enable-demuxer=wav \
     --enable-demuxer=hevc \
     --enable-demuxer=aac \
     --enable-demuxer=pcm_s8 \
