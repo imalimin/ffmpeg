@@ -48,7 +48,7 @@ build(){
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --arch=arm --cpu=cortex-a8"
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-neon"
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-thumb  --enable-asm"
-  	EXTRA_CFLAGS="$EXTRA_CFLAGS -O3 -march=armv7-a -mcpu=cortex-a8 -mfpu=vfpv3-d16 -mfloat-abi=softfp -mthumb"
+    EXTRA_CFLAGS="$EXTRA_CFLAGS -O3 -march=armv7-a -mcpu=cortex-a8 -mfpu=vfpv3-d16 -mfloat-abi=softfp -mthumb"
   	EXTRA_CFLAGS="$EXTRA_CFLAGS -I${X264}/armeabi-v7a/include"
   	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Wl,--fix-cortex-a8 -pie -fPIC"
   	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -L${X264}/armeabi-v7a/lib"
@@ -102,24 +102,42 @@ build(){
     --disable-doc \
     --enable-gpl \
     --enable-nonfree \
-    --disable-w32threads \
-    --disable-programs \
-    --disable-indevs \
-    --disable-outdevs \
-    --disable-debug \
     \
+    --enable-swscale \
+    --enable-avresample \
+    \
+    --disable-gray \
     --disable-ffplay \
     --disable-ffprobe \
     --disable-avdevice \
-    --enable-swscale \
     --disable-postproc \
-    --enable-avresample \
     --disable-network \
+    --disable-programs \
+    --disable-indevs \
+    --disable-outdevs \
+    --disable-symver  \
+    --disable-w32threads \
+    --disable-debug \
+    --disable-htmlpages \
+    --disable-manpages \
+    --disable-podpages \
+    --disable-txtpages \
+    --disable-iconv \
+    --disable-audiotoolbox \
+    --disable-videotoolbox \
+    --disable-armv5te \
+    --disable-armv6 \
+    --disable-armv6t2 \
+    --disable-d3d11va \
+    --disable-dxva2 \
+    --disable-vaapi \
+    --disable-vdpau \
     \
     --enable-jni \
     --enable-mediacodec \
     --enable-hwaccel=h264_mediacodec \
     \
+    --disable-ffmpeg \
     --disable-encoders \
     --enable-libx264 \
     --enable-encoder=libx264 \
@@ -145,6 +163,8 @@ build(){
     --enable-decoder=pcm_f32be \
     --enable-decoder=pcm_f32le \
     --enable-decoder=gif \
+    --enable-decoder=amrnb \
+    --enable-decoder=amrwb \
     \
     --enable-protocol=file \
     \
@@ -198,7 +218,52 @@ build(){
     --enable-parser=aac_latm \
     --enable-parser=gif \
     \
-    --enable-filters \
+    --enable-bsfs \
+    --disable-bsf=text2movsub \
+    --disable-bsf=mjpeg2jpeg \
+    --disable-bsf=mjpega_dump_header \
+    --disable-bsf=mov2textsub \
+    --disable-bsf=imx_dump_header \
+    --disable-bsf=chomp \
+    --disable-bsf=noise \
+    --disable-bsf=dump_extradata \
+    --disable-bsf=remove_extradata \
+    --disable-bsf=dca_core \
+    \
+    --disable-filters \
+    --enable-filter=amix \
+    --enable-filter=aformat \
+    --enable-filter=scale \
+    --enable-filter=format \
+    --enable-filter=aformat \
+    --enable-filter=fps \
+    --enable-filter=trim \
+    --enable-filter=atrim \
+    --enable-filter=vflip \
+    --enable-filter=hflip \
+    --enable-filter=transpose \
+    --enable-filter=rotate \
+    --enable-filter=yadif \
+    --enable-filter=pan \
+    --enable-filter=volume \
+    --enable-filter=aresample \
+    --enable-filter=atempo \
+    --enable-filter=asetrate \
+    --enable-filter=setpts \
+    --enable-filter=overlay \
+    --enable-filter=paletteuse \
+    --enable-filter=areverse \
+    --enable-filter=anull \
+    --enable-filter=palettegen \
+    --enable-filter=null \
+    \
+    --disable-devices \
+    \
+    --enable-pic \
+    --enable-asm \
+    --enable-yasm \
+    --enable-inline-asm \
+    --enable-optimizations \
     \
     --extra-cflags="$EXTRA_CFLAGS" \
     --extra-ldflags="$EXTRA_LDFLAGS" \
