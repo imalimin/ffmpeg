@@ -48,7 +48,7 @@ build(){
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --arch=arm --cpu=cortex-a8"
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-neon"
   	EXTRA_FF_FLAGS="${EXTRA_FF_FLAGS} --enable-thumb  --enable-asm"
-    EXTRA_CFLAGS="$EXTRA_CFLAGS -O3 -march=armv7-a -mcpu=cortex-a8 -mfpu=vfpv3-d16 -mfloat-abi=softfp -mthumb"
+    EXTRA_CFLAGS="$EXTRA_CFLAGS -O3 -march=armv7-a -mcpu=cortex-a8 -mfpu=vfpv3-d16 -mfloat-abi=softfp -mthumb -std=c99 -ffast-math"
   	EXTRA_CFLAGS="$EXTRA_CFLAGS -I${X264}/armeabi-v7a/include"
   	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Wl,--fix-cortex-a8 -pie -fPIC"
   	EXTRA_LDFLAGS="$EXTRA_LDFLAGS -L${X264}/armeabi-v7a/lib"
@@ -102,6 +102,14 @@ build(){
     --disable-doc \
     --enable-gpl \
     --enable-nonfree \
+    --enable-logging \
+    --enable-jni \
+    --enable-mediacodec \
+    --enable-hwaccel=h264_mediacodec \
+    --enable-runtime-cpudetect \
+    --enable-zlib \
+    --enable-fft \
+    --enable-rdft \
     \
     --enable-swscale \
     --enable-avresample \
@@ -132,12 +140,8 @@ build(){
     --disable-dxva2 \
     --disable-vaapi \
     --disable-vdpau \
-    \
-    --enable-jni \
-    --enable-mediacodec \
-    --enable-hwaccel=h264_mediacodec \
-    \
     --disable-ffmpeg \
+    \
     --disable-encoders \
     --enable-libx264 \
     --enable-encoder=libx264 \
@@ -264,6 +268,7 @@ build(){
     --enable-yasm \
     --enable-inline-asm \
     --enable-optimizations \
+    --enable-small \
     \
     --extra-cflags="$EXTRA_CFLAGS" \
     --extra-ldflags="$EXTRA_LDFLAGS" \
@@ -279,7 +284,7 @@ build(){
     -rpath-link=$PLATFORM/usr/lib \
     -L$PLATFORM/usr/lib \
     -L$PREFIX/lib \
-    -soname libhwffmpeg.so -shared -nostdlib -Bsymbolic --whole-archive -O3 \
+    -soname libhwffmpeg.so -shared -nostdlib -Bsymbolic --whole-archive --no-undefined -O3 \
     -o $PREFIX/libhwffmpeg.so \
     $PREFIX/lib/libavcodec.a \
     $PREFIX/lib/libavformat.a \
@@ -290,7 +295,7 @@ build(){
     $PREFIX/lib/libswscale.a \
     $LIB_X264_STATIC \
     -lc -lm -lz -ldl -llog \
-    $LIB_GCC
+    ${LIB_GCC}
     #--no-undefined \
 
   cp config.h ${PREFIX}/include
