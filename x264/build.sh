@@ -25,7 +25,7 @@ build(){
   HOST=
   EXTRA_CFLAGS=
   EXTRA_LDFLAGS=
-  EXTRA_X264_FLAGS=
+  EXTRA_X264_FLAGS="--bit-depth=8 --chroma-format=420 --enable-strip --enable-pic --disable-avs --disable-swscale --disable-lavf --disable-ffms --disable-gpac"
   PREFIX=
 
   OS=linux-x86_64
@@ -43,8 +43,6 @@ build(){
     HOST=arm-linux-androideabi
     EXTRA_CFLAGS="${EXTRA_FLAGS} -fPIC -marm -DX264_VERSION -DANDROID -DHAVE_PTHREAD -DNDEBUG -DANDROID_DEPRECATED_HEADERS=ON -static -D__ARM_ARCH_7__ -D__ARM_ARCH_7A__"
     EXTRA_FLAGS="${EXTRA_FLAGS} -mfloat-abi=softfp -ftree-vectorize -mvectorize-with-neon-quad -ffast-math"
-    EXTRA_X264_FLAGS="${EXTRA_X264_FLAGS} --disable-lavf"
-    EXTRA_X264_FLAGS="${EXTRA_X264_FLAGS} --disable-gpac --enable-strip "
     EXTRA_LDFLAGS="${EXTRA_LDFLAGS} L${ANDROID_TOOLCHAIN}/sysroot/usr/lib"
   elif [ "$arch" = "arm64" ]; then
     echo "------BUILD arm64--------"
@@ -54,8 +52,7 @@ build(){
     EXTRA_CFLAGS="${EXTRA_FLAGS} -fPIC -marm -DX264_VERSION -DANDROID -DHAVE_PTHREAD -DNDEBUG -static"
     EXTRA_CFLAGS="${EXTRA_FLAGS} -Os -mfpu=neon"
     EXTRA_FLAGS="${EXTRA_FLAGS} -mfloat-abi=softfp -ftree-vectorize -mvectorize-with-neon-quad -ffast-math"
-    EXTRA_X264_FLAGS="${EXTRA_X264_FLAGS} --disable-lavf"
-    EXTRA_X264_FLAGS="${EXTRA_X264_FLAGS} --disable-gpac --enable-strip --disable-asm"
+    EXTRA_X264_FLAGS="${EXTRA_X264_FLAGS} --disable-asm"
   elif [ "$arch" = "x86" ]; then
     echo "------BUILD x86--------"
     PREFIX=$(pwd)/product/x86
