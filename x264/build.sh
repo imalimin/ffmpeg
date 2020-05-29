@@ -52,7 +52,6 @@ build(){
     EXTRA_CFLAGS="${EXTRA_FLAGS} -fPIC -marm -DX264_VERSION -DANDROID -DHAVE_PTHREAD -DNDEBUG -static"
     EXTRA_CFLAGS="${EXTRA_FLAGS} -Os -mfpu=neon"
     EXTRA_FLAGS="${EXTRA_FLAGS} -mfloat-abi=softfp -ftree-vectorize -mvectorize-with-neon-quad -ffast-math"
-    EXTRA_X264_FLAGS="${EXTRA_X264_FLAGS} --disable-asm"
   elif [ "$arch" = "x86" ]; then
     echo "------BUILD x86--------"
     PREFIX=$(pwd)/product/x86
