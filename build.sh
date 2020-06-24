@@ -146,26 +146,14 @@ build(){
     --enable-libx264 \
     --enable-encoder=libx264 \
     --enable-encoder=aac \
-    --enable-encoder=pcm_s8 \
-    --enable-encoder=pcm_s16le \
-    --enable-encoder=pcm_s16be \
-    --enable-encoder=pcm_s32le \
-    --enable-encoder=pcm_s32be \
-    --enable-encoder=pcm_f32be \
-    --enable-encoder=pcm_f32le \
+    --enable-encoder='pcm*' \
     --enable-encoder=gif \
     \
     --disable-decoders \
     --enable-decoder=h264_mediacodec \
     --enable-decoder=h264 \
     --enable-decoder=aac \
-    --enable-decoder=pcm_s8 \
-    --enable-decoder=pcm_s16le \
-    --enable-decoder=pcm_s16be \
-    --enable-decoder=pcm_s32le \
-    --enable-decoder=pcm_s32be \
-    --enable-decoder=pcm_f32be \
-    --enable-decoder=pcm_f32le \
+    --enable-decoder='pcm*' \
     --enable-decoder=gif \
     --enable-decoder=amrnb \
     --enable-decoder=amrwb \
@@ -179,13 +167,7 @@ build(){
     --enable-muxer=mp3 \
     --enable-muxer=wav \
     --enable-muxer=hevc \
-    --enable-muxer=pcm_s8 \
-    --enable-muxer=pcm_s16le \
-    --enable-muxer=pcm_s16be \
-    --enable-muxer=pcm_s32le \
-    --enable-muxer=pcm_s32be \
-    --enable-muxer=pcm_f32be \
-    --enable-muxer=pcm_f32le \
+    --enable-muxer='pcm*' \
     --enable-muxer=rawvideo \
     --enable-muxer=gif \
     --enable-muxer=f4v \
@@ -199,13 +181,7 @@ build(){
     --enable-demuxer=wav \
     --enable-demuxer=hevc \
     --enable-demuxer=aac \
-    --enable-demuxer=pcm_s8 \
-    --enable-demuxer=pcm_s16le \
-    --enable-demuxer=pcm_s16be \
-    --enable-demuxer=pcm_s32le \
-    --enable-demuxer=pcm_s32be \
-    --enable-demuxer=pcm_f32be \
-    --enable-demuxer=pcm_f32le \
+    --enable-demuxer='pcm*' \
     --enable-demuxer=rawvideo \
     --enable-demuxer=mpegvideo \
     --enable-demuxer=gif \
