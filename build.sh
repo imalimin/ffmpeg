@@ -148,6 +148,7 @@ build(){
     --enable-encoder=aac \
     --enable-encoder='pcm*' \
     --enable-encoder=gif \
+    --enable-encoder=bmp \
     \
     --disable-decoders \
     --enable-decoder=h264_mediacodec \
@@ -157,6 +158,7 @@ build(){
     --enable-decoder=gif \
     --enable-decoder=amrnb \
     --enable-decoder=amrwb \
+    --enable-decoder=bmp \
     \
     --enable-protocol=file \
     \
@@ -173,6 +175,7 @@ build(){
     --enable-muxer=f4v \
     --enable-muxer=m4v \
     --enable-muxer=flv \
+    --enable-muxer=image2 \
     \
     --disable-demuxers \
     --enable-demuxer=h264 \
@@ -187,6 +190,7 @@ build(){
     --enable-demuxer=gif \
     --enable-demuxer=m4v \
     --enable-demuxer=flv \
+    --enable-demuxer=image2 \
     \
     --disable-parsers \
     --enable-parser=h264 \
@@ -197,6 +201,7 @@ build(){
     --enable-parser=aac \
     --enable-parser=aac_latm \
     --enable-parser=gif \
+    --enable-parser=bmp \
     \
     --enable-bsfs \
     --disable-bsf=text2movsub \
@@ -235,6 +240,7 @@ build(){
     --enable-filter=areverse \
     --enable-filter=anull \
     --enable-filter=palettegen \
+    --enable-filter=showwavespic \
     --enable-filter=null \
     \
     --disable-devices \
